@@ -20,21 +20,33 @@
         </div>
         <div class="live-confession">
             <h2>Live Confessions</h2>
-            <?php
-                include('../admin/db_connect.php');
-                // Retrieve and display the latest confessions
-                $query = "SELECT * FROM confess_confessions ORDER BY id DESC LIMIT 10";
-                $result = mysqli_query($db, $query);
 
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<div class='confession'>";
-                    echo "<p>" . $row['confessions'] . "</p>";
-                    if (!empty($row['name'])) {
-                        echo "<p>By: " . $row['name'] . "</p>";
+            <!--Restrict this div to non-logged in users -->
+            <?php include('action/comment_action.php'); ?>
+
+            <div id="restricted-div" <?php if(!isset($session['login_user'])) { ?>style="display:none"<?php } ?>>
+
+                <!-- HTML code for logout button -->
+                <form method="post" action="action/logout_action.php">
+                <input type="submit" name="logout" value="Logout">
+                </form>
+
+                <?php
+                    include('../admin/db_connect.php');
+                    // Retrieve and display the latest confessions
+                    $query = "SELECT * FROM confess_confessions ORDER BY id DESC LIMIT 10";
+                    $result = mysqli_query($db, $query);
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<div class='confession'>";
+                        echo "<p>" . $row['confessions'] . "</p>";
+                        if (!empty($row['name'])) {
+                            echo "<p>By: " . $row['name'] . "</p>";
+                        }
+                        echo "</div>";
                     }
-                    echo "</div>";
-                }
-            ?>
+                ?>
+            </div>
         </div>
     </div>
 </body>
